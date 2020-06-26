@@ -11,7 +11,7 @@ public class Main extends JFrame{
     private JButton resetButton;
 
     private JPanel HlavniPanel;
-    private JTextPane textPane1;
+    private JTextPane Receipt;
     private JLabel CostMeat;
     private JLabel CostDrink;
     private JLabel CostItem;
@@ -29,6 +29,9 @@ public class Main extends JFrame{
     private JSpinner drink2;
     private JSpinner drink3;
     private JSpinner drink4;
+
+    private int TotalCost = 0, costMeat = 0, costDrink = 0;
+    private double tax = 0, cost =0;
 
     //vkladam ceny do pole
     private JSpinner[][] jidloPole = {{meat0, meat1,meat2,meat3,meat4},{drink0,drink1,drink2, drink3, drink4}};
@@ -79,8 +82,6 @@ public class Main extends JFrame{
                 {(int)drink0.getValue(),(int) drink1.getValue(),(int) drink2.getValue(),(int) drink3.getValue(),(int) drink4.getValue()}
         };
 
-        int costMeat = 0, costDrink = 0;
-
         //uklada hodnoty a prochazi pole >>>
         for (int x=0;x<=jidlo.length-1;x++){
             costMeat += (jidlo[0][x]*cena[0][x]);
@@ -88,19 +89,42 @@ public class Main extends JFrame{
         }
 
         //vypocti zbivajicich hodnot
-        int costTotal = costDrink+costMeat;
-        double tax = (costTotal*0.21*100)/100;
-        double cost = costTotal+tax;
+        TotalCost = costDrink+costMeat;
+        tax = (TotalCost*0.21*100)/100;
+        cost = TotalCost+tax;
 
         //nastavuje hodnoty do JLabel
         this.CostDrink.setText(costDrink+" kc");
         this.CostMeat.setText(costMeat+" kc");
-        this.CostItem.setText(costTotal+" kc");
+        this.CostItem.setText(TotalCost+" kc");
         this.CostTax.setText(tax+" kc");
         this.Cost.setText(cost+" kc");
     }
     public void write(){
-        //neresit
+        StringBuilder text = new StringBuilder();
+        String end = " kc";
+        String[][] n = {{"References", "Meals", "Drinks", "Total cost","Tax","Total"},{costMeat+end,costDrink+end,TotalCost+end,tax+end,cost+end}};
+        String rozdelka = "\n========================================\n";
+        text.append("      Restourant Managment System:       ").append(rozdelka).append("\n");
+
+        for (int x = 0; x < n[0].length;x++){
+            text.append(n[0][x]);
+            text.append(addSpace(n[0][x], rozdelka.length()));
+            text.append(n[1][x]);
+            text.append("\n");
+
+            if (x == 2)
+                text.append(rozdelka);
+        }
+
+        text.append("");
+
+        this.Receipt.setText(text.toString());
+    }
+    public String addSpace(String x, int len){
+        while (x.length()<len)
+            x += " ";
+        return x;
     }
     //resetuje hodnoty na nulu
     public void reset(){
